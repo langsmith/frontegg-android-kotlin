@@ -48,6 +48,28 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_SIGNING_KEY }}
         run: ./gradlew publish
+
+
+      - name: release sonatype
+        env:
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        uses: actions/github-script@0.8.0
+        with:
+          nexus_username: ${{secrets.NEXUS_USERNAME}}
+          nexus_password: ${{secrets.NEXUS_PASSWORD}}
+          script: |
+            console.log("release sonatype")
+            // get repository ids
+            // https://oss.sonatype.org/service/local/staging/profile_repositories
+            
+            // get correct repo id by content
+            // https://oss.sonatype.org/service/local/repositories/${REPO_ID}/content/com/frontegg/sdk/android/
+            
+            // close repo and public repo
+            // sh sonatype.sh with repoId, nexus_username,nexus_password
+            
+
 #      - name: Tag Check
 #        id: tag_check
 #        shell: bash -ex {0}
