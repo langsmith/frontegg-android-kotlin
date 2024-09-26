@@ -8,7 +8,7 @@ on:
 env:
   CI: true
   LANG: en_US.UTF-8
-  API_LEVEL: 33
+  API_LEVEL: 29
 
 concurrency:
   group: ci-push-${{ github.ref }}
@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   test:
-    runs-on: macos-latest
+    runs-on: macos-12
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -33,6 +33,11 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+
+      - name: Build Libraries
+        shell: bash
+        run: ./gradlew :app:build --no-daemon
+
       - name: AVD cache
         uses: actions/cache@v4
         id: avd-cache
@@ -42,15 +47,15 @@ jobs:
             ~/.android/adb*
           key: avd-${{ env.API_LEVEL }}
 
-      - name: create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ env.API_LEVEL }}
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
-          script: echo "Generated AVD snapshot for caching."
+#      - name: create AVD and generate snapshot for caching
+#        if: steps.avd-cache.outputs.cache-hit != 'true'
+#        uses: reactivecircus/android-emulator-runner@v2
+#        with:
+#          api-level: ${{ env.API_LEVEL }}
+#          force-avd-creation: false
+#          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+#          disable-animations: false
+#          script: echo "Generated AVD snapshot for caching."
 
 
       - name: Setup appium
