@@ -8,7 +8,6 @@ on:
 env:
   CI: true
   LANG: en_US.UTF-8
-  API_LEVEL: 29
 
 concurrency:
   group: ci-push-${{ github.ref }}
